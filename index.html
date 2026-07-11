@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HabitQuest</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&family=Nunito+Sans:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="phone-shell">
+      <section class="page active" data-page="board">
+        <div class="bg-fantasy"></div>
+        <header class="top-bar fantasy-bar">
+          <div class="flex items-center gap-3">
+            <div class="avatar">🧒</div>
+            <h1>습관 퀘스트</h1>
+          </div>
+          <button type="button" class="profile-open-btn"><span id="profileTopLabelBoard">프로필</span></button>
+        </header>
+
+        <main class="page-content map-content">
+          <div class="board-container">
+            <div class="board-square special-square">출발!</div>
+            <div class="board-square">1</div>
+            <div class="board-square">2</div>
+            <div class="board-square special-blue">찬스</div>
+            <div class="board-square special-green">보너스</div>
+            <div class="board-square">10</div>
+            <div class="board-square">3</div>
+            <div class="board-square">9</div>
+            <div class="board-center">
+              <strong>습관<br />퀘스트</strong>
+              <div class="center-stats"><span>1,250 경험치</span><span>42 보석</span></div>
+            </div>
+            <div class="board-square">4</div>
+            <div class="board-square">8</div>
+            <div class="board-square">5</div>
+            <div class="board-square jail">감옥</div>
+            <div class="board-square">7</div>
+            <div class="board-square gift">선물</div>
+            <div class="board-square">6</div>
+            <div class="board-square rest">휴식</div>
+            <div id="pawnMarkerP1" class="pawn-marker pawn-p1">🧝</div>
+            <div id="pawnMarkerP2" class="pawn-marker pawn-p2">🧙</div>
+          </div>
+
+          <button id="rollDiceButton" class="dice-fab" type="button" aria-label="주사위 굴리기">
+            <span class="dice-face" aria-hidden="true">
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+              <span class="pip"></span>
+            </span>
+            <small>굴리기!</small>
+          </button>
+
+          <section class="mission-panel">
+            <p class="mission-label">진행 중인 퀘스트 (최대 3개)</p>
+            <div id="missionList" class="mission-list"></div>
+          </section>
+        </main>
+      </section>
+
+      <section class="page" data-page="tasks">
+        <header class="top-bar light-bar">
+          <div class="flex items-center gap-3">
+            <div class="avatar yellow">🙂</div>
+            <h1 class="text-blue">HabitQuest</h1>
+          </div>
+          <button type="button" class="profile-open-btn light"><span id="profileTopLabelTasks">프로필</span></button>
+        </header>
+
+        <main class="page-content light-bg">
+          <section class="challenge-head">
+            <div class="flex items-end justify-between">
+              <h2>오늘의 도전</h2>
+              <p class="muted">3 / 5 보상까지</p>
+            </div>
+            <div class="token-track">
+              <span class="dot active"></span><span class="dot active"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+              <span class="gift">🎁</span>
+            </div>
+          </section>
+
+          <p class="coach-msg">🐲 오늘도 힘내, 용사님!</p>
+
+          <div class="task-list">
+            <article class="task-card" data-task-id="bed" onclick="completeTask(this)">
+              <div><h3>침대 정리 퀘스트</h3><p>마법의 아침을 시작해!</p></div>
+              <div class="task-actions">
+                <button type="button" class="proof-btn" onclick="openProofUploader(event, this)">📷</button>
+                <button type="button" class="check" onclick="toggleQuestStar(event, this)">⭐</button>
+              </div>
+            </article>
+            <article class="task-card" data-task-id="brush" onclick="completeTask(this)">
+              <div><h3>반짝반짝 양치질</h3><p>치아 요정이 찾아와요!</p></div>
+              <div class="task-actions">
+                <button type="button" class="proof-btn" onclick="openProofUploader(event, this)">📷</button>
+                <button type="button" class="check" onclick="toggleQuestStar(event, this)">⭐</button>
+              </div>
+            </article>
+            <article class="task-card" data-task-id="homework" onclick="completeTask(this)">
+              <div><h3>지혜의 숙제 시간</h3><p>집중력 마법 발동!</p></div>
+              <div class="task-actions">
+                <button type="button" class="proof-btn" onclick="openProofUploader(event, this)">📷</button>
+                <button type="button" class="check" onclick="toggleQuestStar(event, this)">⭐</button>
+              </div>
+            </article>
+          </div>
+
+          <input id="proofUploadInput" type="file" accept="image/*" class="hidden" />
+
+          <article class="settings-card add-task-card">
+            <h2>내가 할 일 추가</h2>
+            <form id="taskAddForm" class="editor-form">
+              <label>
+                <span>할 일 제목</span>
+                <input id="taskTitleInput" type="text" maxlength="30" required placeholder="예: 물 1컵 마시기" />
+              </label>
+              <label>
+                <span>설명</span>
+                <input id="taskDescInput" type="text" maxlength="50" placeholder="짧게 적어줘" />
+              </label>
+              <button type="submit" class="save-btn">할 일 추가</button>
+            </form>
+          </article>
+
+          <article class="settings-card pawn-editor-card">
+            <h2>모두의 말 바꾸기</h2>
+            <p class="muted">각 플레이어가 원하는 말 아이콘으로 바꿀 수 있어요.</p>
+            <div class="pawn-editor-grid">
+              <label>
+                <span>하루</span>
+                <div class="pawn-picker-row">
+                  <span id="pawnP1Preview" class="pawn-preview">🧝</span>
+                  <select id="pawnP1Select">
+                    <option value="🧝">🧝 엘프</option>
+                    <option value="🧙">🧙 마법사</option>
+                    <option value="🦊">🦊 여우</option>
+                    <option value="🐯">🐯 호랑이</option>
+                    <option value="🐼">🐼 판다</option>
+                    <option value="🐰">🐰 토끼</option>
+                    <option value="🦄">🦄 유니콘</option>
+                    <option value="🐉">🐉 드래곤</option>
+                  </select>
+                </div>
+              </label>
+              <label>
+                <span>도윤</span>
+                <div class="pawn-picker-row">
+                  <span id="pawnP2Preview" class="pawn-preview">🧙</span>
+                  <select id="pawnP2Select">
+                    <option value="🧙">🧙 마법사</option>
+                    <option value="🧝">🧝 엘프</option>
+                    <option value="🦊">🦊 여우</option>
+                    <option value="🐯">🐯 호랑이</option>
+                    <option value="🐼">🐼 판다</option>
+                    <option value="🐰">🐰 토끼</option>
+                    <option value="🦄">🦄 유니콘</option>
+                    <option value="🐉">🐉 드래곤</option>
+                  </select>
+                </div>
+              </label>
+            </div>
+          </article>
+        </main>
+      </section>
+
+      <section class="page" data-page="ranking">
+        <header class="top-bar light-bar">
+          <h1 class="text-blue">통계</h1><button type="button" class="profile-open-btn light"><span id="profileTopLabelRanking">프로필</span></button>
+        </header>
+        <main class="page-content light-bg">
+          <article class="rank-card">
+            <h2>주간 진행도</h2>
+            <p class="big">85% 완료</p>
+            <div class="progress-track"><div class="progress-fill wide"></div></div>
+            <ul>
+              <li>연속 수행: 6일</li>
+              <li>완료한 할 일: 18개</li>
+              <li>누적 점수: 1,250점</li>
+            </ul>
+          </article>
+        </main>
+      </section>
+
+      <section class="page" data-page="settings">
+        <header class="top-bar light-bar">
+          <div class="flex items-center gap-3">
+            <div class="avatar yellow">👨‍👩‍👧</div>
+            <h1 class="text-blue">부모 설정</h1>
+          </div>
+          <button type="button" class="profile-open-btn light"><span id="profileTopLabelSettings">프로필</span></button>
+        </header>
+
+        <main class="page-content light-bg">
+          <article class="settings-card">
+            <h2>가족방 편집기</h2>
+            <form id="familyEditorForm" class="editor-form">
+              <label>
+                <span>가족방 이름</span>
+                <input id="editRoomNameInput" type="text" maxlength="20" required />
+              </label>
+              <label>
+                <span>새 부모 비밀번호</span>
+                <input id="editPasswordInput" type="password" minlength="4" maxlength="20" placeholder="변경 시에만 입력" />
+              </label>
+              <button type="submit" class="save-btn">가족방 저장</button>
+              <p id="familyEditorMessage" class="editor-message hidden">저장되었습니다.</p>
+            </form>
+          </article>
+
+          <article class="settings-card">
+            <h2>습관 관리</h2>
+            <label><span>침대 정리하기</span><input type="checkbox" checked /></label>
+            <label><span>양치질 하기</span><input type="checkbox" checked /></label>
+            <label><span>숙제 끝내기</span><input type="checkbox" /></label>
+          </article>
+
+          <article class="settings-card">
+            <h2>보상 관리</h2>
+            <p>좋아하는 간식 - 50 보석</p>
+            <p>게임 30분 더 - 100 보석</p>
+          </article>
+
+          <article class="settings-card">
+            <h2>인증샷 승인</h2>
+            <p class="muted">아이들이 올린 사진을 확인하고 승인해 주세요.</p>
+            <div id="parentProofList" class="parent-proof-list"></div>
+          </article>
+
+          <article class="settings-card">
+            <h2>플레이어 권한</h2>
+            <p class="muted">현재 가족방 플레이어를 보고 부모 권한을 부여할 수 있어요.</p>
+            <div id="playerAuthorityList" class="player-authority-list"></div>
+          </article>
+
+          <article class="settings-card">
+            <h2>알림 설정</h2>
+            <label><span>습관 리마인더</span><input type="checkbox" checked /></label>
+            <label><span>완료 알림</span><input type="checkbox" checked /></label>
+          </article>
+        </main>
+      </section>
+
+      <nav class="bottom-nav" aria-label="앱 하단 메뉴">
+        <button class="nav-btn active" data-page="board"><span class="material-symbols-outlined">map</span><small>지도</small></button>
+        <button class="nav-btn" data-page="tasks"><span class="material-symbols-outlined">checklist</span><small>할 일</small></button>
+        <button class="nav-btn" data-page="ranking"><span class="material-symbols-outlined">leaderboard</span><small>통계</small></button>
+        <button class="nav-btn" data-page="settings"><span class="material-symbols-outlined">settings_accessibility</span><small>부모님</small></button>
+      </nav>
+
+      <div id="familySetupModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="familySetupTitle">
+        <form id="familySetupForm" class="modal-card">
+          <h2 id="familySetupTitle">가족방 만들기</h2>
+          <p>앱을 시작하기 전에 가족방 이름과 부모 비밀번호를 설정해 주세요.</p>
+          <label>
+            가족방 이름
+            <input id="familyRoomNameInput" type="text" required maxlength="20" placeholder="예: 도전가족" />
+          </label>
+          <label>
+            부모 비밀번호
+            <input id="familyPasswordInput" type="password" required minlength="4" maxlength="20" placeholder="4자 이상" />
+          </label>
+          <button type="submit">가족방 생성</button>
+        </form>
+      </div>
+
+      <div id="parentAuthModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="parentAuthTitle">
+        <form id="parentAuthForm" class="modal-card">
+          <h2 id="parentAuthTitle">부모님 인증</h2>
+          <p id="parentAuthHint">부모 설정에 들어가려면 비밀번호를 입력하세요.</p>
+          <label>
+            비밀번호
+            <input id="parentAuthPasswordInput" type="password" required minlength="4" maxlength="20" />
+          </label>
+          <p id="parentAuthError" class="modal-error hidden">비밀번호가 올바르지 않습니다.</p>
+          <div class="modal-actions">
+            <button type="button" id="parentAuthCancel" class="secondary-btn">취소</button>
+            <button type="submit">확인</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="profileModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+        <form id="profileForm" class="modal-card">
+          <h2 id="profileTitle">내 프로필</h2>
+          <label>
+            내 이름
+            <input id="profileNameInput" type="text" maxlength="20" required />
+          </label>
+          <label>
+            내 말
+            <select id="profilePawnSelect">
+              <option value="🧝">🧝 엘프</option>
+              <option value="🧙">🧙 마법사</option>
+              <option value="🦊">🦊 여우</option>
+              <option value="🐯">🐯 호랑이</option>
+              <option value="🐼">🐼 판다</option>
+              <option value="🐰">🐰 토끼</option>
+              <option value="🦄">🦄 유니콘</option>
+              <option value="🐉">🐉 드래곤</option>
+            </select>
+          </label>
+          <p id="profileError" class="modal-error hidden">이미 다른 플레이어가 사용 중인 말이에요.</p>
+          <div class="modal-actions">
+            <button type="button" id="profileCancel" class="secondary-btn">취소</button>
+            <button type="submit">저장</button>
+          </div>
+        </form>
+      </div>
+
+      <div id="cameraModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="cameraTitle">
+        <div class="modal-card">
+          <h2 id="cameraTitle">인증샷 촬영</h2>
+          <video id="cameraPreview" class="camera-preview" autoplay playsinline muted></video>
+          <canvas id="cameraCanvas" class="hidden"></canvas>
+          <div class="modal-actions">
+            <button type="button" id="cameraCancel" class="secondary-btn">취소</button>
+            <button type="button" id="cameraCapture">촬영</button>
+          </div>
+          <button type="button" id="cameraUseFile" class="secondary-btn">파일에서 선택</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
