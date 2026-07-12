@@ -68,6 +68,18 @@ const pawnP2Select = document.getElementById("pawnP2Select");
 const pawnP1Preview = document.getElementById("pawnP1Preview");
 const pawnP2Preview = document.getElementById("pawnP2Preview");
 
+// 로그인 관련 DOM 요소
+const loginPage = document.querySelector('.page[data-page="login"]');
+const playerSelectList = document.getElementById("playerSelectList");
+const addNewPlayerBtn = document.getElementById("addNewPlayerBtn");
+const addPlayerModal = document.getElementById("addPlayerModal");
+const addPlayerForm = document.getElementById("addPlayerForm");
+const newPlayerNameInput = document.getElementById("newPlayerNameInput");
+const newPlayerPawnSelect = document.getElementById("newPlayerPawnSelect");
+const addPlayerError = document.getElementById("addPlayerError");
+const addPlayerCancel = document.getElementById("addPlayerCancel");
+const logoutBtn = document.getElementById("logoutBtn");
+
 let familyConfig = loadFamilyConfig();
 let pendingProtectedPage = null;
 let pawnState = loadPawnState();
@@ -744,6 +756,121 @@ function setActivePage(pageName) {
   }
 }
 
+// ===== 로그인 관련 함수 =====
+
+function renderPlayerSelectList() {
+  if (!playerSelectList) {
+    return;
+  }
+
+  playerSelectList.innerHTML = players.map((player) => `
+    <button type="button" class="player-select-item" onclick="loginPlayer('${player.id}')">
+      <div class="player-select-avatar">${player.pawn}</div>
+      <div class="player-select-info">
+        <h3>${player.name}</h3>
+        <p>${player.isAdmin ? "부모님" : "아이"}</p>
+      </div>
+    </button>
+  `).join("");
+}
+
+function loginPlayer(playerId) {
+  const player = players.find((p) => p.id === playerId);
+  if (!player) {
+    return;
+  }
+
+  currentPlayerId = playerId;
+  saveCurrentPlayerId();
+  updateProfileTopLabels();
+  setActivePage("board");
+}
+
+function openAddPlayerModal() {
+  newPlayerNameInput.value = "";
+  newPlayerPawnSelect.value = "🧝";
+  addPlayerError.classList.add("hidden");
+  showModal(addPlayerModal);
+  newPlayerNameInput.focus();
+}
+
+function logoutCurrentPlayer() {
+  currentPlayerId = null;
+  saveCurrentPlayerId();
+  renderPlayerSelectList();
+  setActivePage("login");
+}
+
+function bindLoginPage() {
+  if (!addNewPlayerBtn) {
+    return;
+  }
+
+  addNewPlayerBtn.addEventListener("click", openAddPlayerModal);
+
+  if (addPlayerCancel) {
+    addPlayerCancel.addEventListener("click", () => {
+      hideModal(addPlayerModal);
+    });
+  }
+
+  if (addPlayerForm) {
+    addPlayerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const name = newPlayerNameInput.value.trim();
+      const pawn = newPlayerPawnSelect.value;
+
+      if (!name) {
+        addPlayerError.textContent = "이름을 입력해주세요.";
+        addPlayerError.classList.remove("hidden");
+        return;
+      }
+
+      const pawnTaken = players.some((player) => player.pawn === pawn);
+      if (pawnTaken) {
+        addPlayerError.textContent = "이미 다른 플레이어가 사용 중인 말이에요.";
+        addPlayerError.classList.remove("hidden");
+        return;
+      }
+
+      // 새 플레이어 추가
+      const newPlayerId = `p${players.length + 1}`;
+      const newPlayer = {
+        id: newPlayerId,
+        name: name,
+        pawn: pawn,
+        isAdmin: false
+      };
+
+      players.push(newPlayer);
+      savePlayers();
+      renderPlayerSelectList();
+      hideModal(addPlayerModal);
+    });
+  }
+}
+
+function bindLogoutButton() {
+  if (!logoutBtn) {
+    return;
+  }
+
+  logoutBtn.addEventListener("click", () => {
+    if (confirm("정말 로그아웃하시겠습니까?")) {
+      logoutCurrentPlayer();
+    }
+  });
+}
+
+function showLoginPageIfNeeded() {
+  renderPlayerSelectList();
+  if (!currentPlayerId || !players.some((p) => p.id === currentPlayerId)) {
+    currentPlayerId = null;
+    saveCurrentPlayerId();
+    setActivePage("login");
+  }
+}
+
 function showModal(modal) {
   modal.classList.remove("hidden");
 }
@@ -1212,6 +1339,9 @@ bindTaskAddForm();
 bindProofUpload();
 bindCameraModal();
 bindMapInteraction();
+bindLoginPage();
+bindLogoutButton();
+bindProfileModal();
 buildBoardTrackSquares();
 renderCustomTasks();
 normalizeTaskProgress();
@@ -1223,6 +1353,11 @@ renderPawnState();
 setDiceFace(5);
 renderPawnPositions();
 updateDiceButtonState();
+updateProfileTopLabels();
+renderPlayerSelectList();
+
+// 초기 페이지 설정
+showLoginPageIfNeeded();
 
 if (!familyConfig) {
   openFamilySetup();

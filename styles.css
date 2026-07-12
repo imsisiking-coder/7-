@@ -127,6 +127,7 @@ body {
   position: absolute;
   inset: 70px 0 0 0;
   background: radial-gradient(circle at 20% 30%, rgba(255, 210, 0, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(43, 76, 218, 0.15) 0%, transparent 40%);
+  pointer-events: none;
 }
 
 .board-container {
@@ -597,6 +598,135 @@ body {
   color: #2f8f83;
   font-weight: 700;
 }
+
+/* 로그인 페이지 스타일 */
+.page[data-page="login"] .bg-fantasy {
+  display: none;
+}
+
+.page[data-page="login"] .page-content {
+  position: relative;
+  z-index: 1;
+}
+
+.login-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 100%;
+}
+
+.login-container {
+  width: 100%;
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.login-container h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  text-align: center;
+  color: #13192b;
+}
+
+.login-subtitle {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #5e6880;
+  text-align: center;
+}
+
+.player-select-list {
+  display: grid;
+  gap: 10px;
+}
+
+.player-select-item {
+  border: 2px solid #dde3ef;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.player-select-item:active {
+  transform: scale(0.98);
+  background: #f1f4fa;
+}
+
+.player-select-item:hover {
+  border-color: #2b4cda;
+  background: #f8f9ff;
+}
+
+.player-select-avatar {
+  font-size: 32px;
+}
+
+.player-select-info {
+  flex: 1;
+}
+
+.player-select-info h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #13192b;
+}
+
+.player-select-info p {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #5e6880;
+}
+
+.add-player-btn {
+  border: 2px solid #2b4cda;
+  border-radius: 14px;
+  padding: 14px;
+  background: #fff;
+  color: #2b4cda;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 15px;
+}
+
+.add-player-btn:active {
+  background: #f1f4fa;
+}
+
+.add-player-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.logout-btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #f4a3a3;
+  color: #a22828;
+  font-weight: 800;
+  padding: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logout-btn:active {
+  background: #e88888;
+}
+
 
 .bottom-nav {
   position: absolute;
